@@ -1,23 +1,126 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const latest = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 5);
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				width: 720px;
+			}
+			.intro {
+				margin-bottom: 3.5rem;
+			}
+			.intro h1 {
+				font-size: 2.4rem;
+				line-height: 1.15;
+				margin-bottom: 1rem;
+			}
+			.intro p {
+				font-size: 1.15rem;
+				color: rgb(var(--gray-dark));
+				margin: 0;
+				max-width: 40ch;
+			}
+
+			.latest h2 {
+				font-size: 1rem;
+				text-transform: uppercase;
+				letter-spacing: 0.08em;
+				color: rgb(var(--gray));
+				margin-bottom: 1rem;
+			}
+			.latest ul {
+				list-style: none;
+				margin: 0 0 1.25rem 0;
+				padding: 0;
+			}
+			.latest li {
+				padding: 0.9rem 0;
+				border-bottom: 1px solid rgb(var(--gray-light));
+			}
+			.latest li:first-child {
+				padding-top: 0;
+			}
+			.latest a {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				gap: 1rem;
+				text-decoration: none;
+				color: inherit;
+			}
+			.latest .t {
+				font-size: 1.15rem;
+				font-weight: 700;
+				color: rgb(var(--black));
+				transition: color 0.2s ease;
+			}
+			.latest a:hover .t {
+				color: var(--accent);
+			}
+			.latest .d {
+				flex: 0 0 auto;
+				font-size: 0.9rem;
+				color: rgb(var(--gray));
+			}
+			.more a {
+				font-weight: 700;
+			}
+
+			@media (max-width: 720px) {
+				.intro h1 {
+					font-size: 2rem;
+				}
+				.latest a {
+					flex-direction: column;
+					gap: 0.15rem;
+				}
+			}
+		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<h1>Welcome</h1>
-			<p>
-				I'm Daniel — glad you found your way here. This is where I'll be sharing
-				my writing, and the first pieces are on their way. Thanks for stopping by early.
-			</p>
+			<section class="intro">
+				<h1>Securing critical infrastructure in the age of AI.</h1>
+				<p>
+					I translate between AI capability, OT reality, and the people who have to decide —
+					thirty years across military operations, physical security, ICS cybersecurity, and now AI.
+				</p>
+			</section>
+
+			{
+				latest.length > 0 && (
+					<section class="latest">
+						<h2>Latest writing</h2>
+						<ul>
+							{latest.map((post) => (
+								<li>
+									<a href={`/blog/${post.id}/`}>
+										<span class="t">{post.data.title}</span>
+										<span class="d">
+											<FormattedDate date={post.data.pubDate} />
+										</span>
+									</a>
+								</li>
+							))}
+						</ul>
+						<p class="more"><a href="/blog">All writing →</a></p>
+					</section>
+				)
+			}
 		</main>
 		<Footer />
 	</body>
