@@ -1,11 +1,18 @@
 ---
+import { Image } from 'astro:assets';
+import avatar from '../assets/avatar.png';
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
 ---
 
 <header>
 	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
+		<h2>
+			<a href="/">
+				<Image src={avatar} alt="Daniel Suchý" width={32} height={32} class="avatar" />
+				<span>{SITE_TITLE}</span>
+			</a>
+		</h2>
 		<div class="internal-links">
 			<HeaderLink href="/">Home</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
@@ -28,6 +35,15 @@ import HeaderLink from './HeaderLink.astro';
 	h2 a,
 	h2 a.active {
 		text-decoration: none;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5em;
+	}
+	.avatar {
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		object-fit: cover;
 	}
 	nav {
 		display: flex;
