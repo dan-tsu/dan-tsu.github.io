@@ -10,78 +10,152 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+// Topics row — grows automatically as posts gain tags.
+const topics = [...new Set(posts.flatMap((p) => p.data.tags ?? []))];
+const count = posts.length;
+
+// Pagination is a placeholder until the archive is large enough to need it.
+const PAGE_SIZE = 15;
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`Blog · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 		<style>
 			main {
-				width: 960px;
+				width: 820px;
 			}
-			ul {
+
+			/* Header */
+			.blog-head {
+				margin-bottom: 1.5rem;
+			}
+			.blog-head h1 {
+				margin-bottom: 0.25rem;
+			}
+			.blog-head .subtitle {
+				margin: 0;
+				color: rgb(var(--gray));
+				font-size: 1.1rem;
+			}
+
+			/* Topics row (placeholder that fills in from tags) */
+			.topics {
 				display: flex;
 				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
+				gap: 0.5rem;
+				margin: 0 0 2.5rem 0;
+				padding-bottom: 1.5rem;
+				border-bottom: 1px solid rgb(var(--gray-light));
+			}
+			.chip {
+				font-size: 0.85rem;
+				line-height: 1;
+				padding: 0.4em 0.7em;
+				border-radius: 999px;
+				background: rgb(var(--gray-light));
+				color: rgb(var(--gray-dark));
+			}
+
+			/* Post list — single column of horizontal cards */
+			.post-list {
+				list-style: none;
 				margin: 0;
 				padding: 0;
 			}
-			ul li {
-				width: calc(50% - 1rem);
+			.post-card {
+				padding: 1.75rem 0;
+				border-bottom: 1px solid rgb(var(--gray-light));
 			}
-			ul li * {
+			.post-card:first-child {
+				padding-top: 0;
+			}
+			.card-link {
+				display: flex;
+				gap: 1.5rem;
+				align-items: flex-start;
 				text-decoration: none;
-				transition: 0.2s ease;
+				color: inherit;
 			}
-			ul li:first-child {
+			.thumb {
+				flex: 0 0 260px;
+			}
+			.thumb :global(img) {
 				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
+				height: auto;
+				border-radius: 10px;
+				transition: box-shadow 0.2s ease;
 			}
-			ul li:first-child img {
-				width: 100%;
+			.card-body {
+				flex: 1 1 auto;
+				min-width: 0;
 			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
+			.card-body .title {
+				margin: 0 0 0.35rem 0;
+				font-size: 1.6rem;
+				line-height: 1.15;
 				color: rgb(var(--black));
-				line-height: 1;
+				transition: color 0.2s ease;
 			}
-			.date {
-				margin: 0;
+			.meta {
+				margin: 0 0 0.6rem 0;
+				font-size: 0.9rem;
 				color: rgb(var(--gray));
 			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
+			.meta .tag {
+				color: rgb(var(--gray));
 			}
-			ul a:hover img {
+			.excerpt {
+				margin: 0;
+				color: rgb(var(--gray-dark));
+				font-size: 1rem;
+				line-height: 1.55;
+			}
+			.card-link:hover .title {
+				color: var(--accent);
+			}
+			.card-link:hover .thumb :global(img) {
 				box-shadow: var(--box-shadow);
 			}
+
+			/* Pagination placeholder */
+			.pager {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 2rem;
+				color: rgb(var(--gray));
+			}
+
+			/* Follow / subscribe placeholder */
+			.subscribe {
+				margin-top: 3rem;
+				padding: 1.75rem;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 12px;
+				text-align: center;
+			}
+			.subscribe h3 {
+				margin: 0 0 0.4rem 0;
+			}
+			.subscribe p {
+				margin: 0;
+				color: rgb(var(--gray));
+				font-size: 1rem;
+			}
+
 			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
+				.card-link {
+					flex-direction: column;
+					gap: 0.75rem;
 				}
-				ul li {
+				.thumb {
+					flex-basis: auto;
 					width: 100%;
-					text-align: center;
 				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
+				.card-body .title {
+					font-size: 1.4rem;
 				}
 			}
 		</style>
@@ -89,25 +163,62 @@ const posts = (await getCollection('blog')).sort(
 	<body>
 		<Header />
 		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
+			<header class="blog-head">
+				<h1>Blog</h1>
+				<p class="subtitle">
+					{count} {count === 1 ? 'essay' : 'essays'} on critical infrastructure, OT security, and AI — and the translation between them.
+				</p>
+			</header>
+
+			{
+				topics.length > 0 && (
+					<nav class="topics" aria-label="Topics">
+						{topics.map((t) => (
+							<span class="chip">#{t}</span>
+						))}
+					</nav>
+				)
+			}
+
+			<ul class="post-list">
+				{
+					posts.map((post) => (
+						<li class="post-card">
+							<a class="card-link" href={`/blog/${post.id}/`}>
+								{post.data.heroImage && (
+									<div class="thumb">
+										<Image width={520} height={349} src={post.data.heroImage} alt="" />
+									</div>
+								)}
+								<div class="card-body">
+									<h2 class="title">{post.data.title}</h2>
+									<p class="meta">
 										<FormattedDate date={post.data.pubDate} />
+										{post.data.tags?.length ? (
+											<span> · {post.data.tags.map((t) => `#${t}`).join(' ')}</span>
+										) : null}
 									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
+									{post.data.description && <p class="excerpt">{post.data.description}</p>}
+								</div>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+
+			{
+				count > PAGE_SIZE && (
+					<nav class="pager" aria-label="Pagination">
+						<span>← Previous</span>
+						<span>Next →</span>
+					</nav>
+				)
+			}
+
+			<aside class="subscribe">
+				<h3>Follow along</h3>
+				<p>New writing on OT security, AI, and the systems society runs on. A newsletter is in the works.</p>
+			</aside>
 		</main>
 		<Footer />
 	</body>

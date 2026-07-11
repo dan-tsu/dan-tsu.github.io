@@ -3,6 +3,7 @@ title: "Wiki or RAG: two ways to put an offline LLM on industrial documentation"
 description: "Two ways to put a local, offline LLM on industrial plant documentation — a compiled wiki versus retrieval — and how to choose for an OT environment."
 pubDate: "Jul 11 2026"
 heroImage: "../../assets/wiki-vs-rag-hero.jpg"
+tags: ["OTsecurity", "AI", "RAG", "IEC62443"]
 ---
 
 You have a room full of plant documentation. P&IDs, standard operating procedures, incident reports, and the IEC 62443 and NIST 800-82 texts themselves. Somewhere in there is the answer to the question in front of you, and you need it now — from those documents, not from a model's training data, and without any of it leaving the building.
