@@ -60,6 +60,11 @@ h4 {
 h5 {
 	font-size: 0.938em;
 }
+/* Article/prose section headings: one line of space before and after */
+.prose :is(h2, h3, h4, h5, h6) {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
 strong,
 b {
 	font-weight: 700;
