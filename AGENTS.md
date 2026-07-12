@@ -1,3 +1,19 @@
+## Privacy & PII — HARD RULE (applies to every page, post, and future update)
+
+**This is a PUBLIC repo. No private information or personally identifiable information (PII) is ever published here — not in a post, not on the Daemon page, not in frontmatter, commit messages, or assets. This applies to all future updates, without exception.**
+
+**Never publish (default to EXCLUDE when unsure):**
+- Home address, phone number, personal email, precise location (city-level or finer — "Slovakia" is the floor).
+- Financial details: income, income-reduction figures, budgets, financial exposure.
+- Employment transition mechanics: the part-time-reduction / exit timeline, employer negotiation plans, or naming the current employer in a transition context.
+- Health / body data: weight, fitness metrics, medical information.
+- Family/relationship details, or anyone else's PII.
+- Anything drawn from the private PAI TELOS that is not already public on Daniel's LinkedIn.
+
+**Already-public and therefore allowed:** first name / display name, professional headline, public certifications (CPP · GICSP · GRID · IEC 62443), the LinkedIn URL, public project repos, and published writing.
+
+**The Daemon page (`/daemon`) is the highest-risk surface** — it is projected from the TELOS, which contains private material. Every Daemon edit MUST re-apply this filter: include only the public layer of the telos (mission, public problems, focus, public projects, influences, what he offers/seeks). When in doubt, leave it out and ask.
+
 ## Blog publishing rules
 
 **Every blog post MUST ship with a hero image — no exceptions.** Publishing a post without a `heroImage` is not allowed; a heroless post breaks visual consistency with the rest of the index.
