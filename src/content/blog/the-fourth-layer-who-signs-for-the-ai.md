@@ -2,6 +2,7 @@
 title: "The Fourth Layer: Who Signs for the AI in Your Plant?"
 description: "The three EmberOT articles map where AI belongs on the plant floor. NIS2 decides who signs for it."
 pubDate: "Jul 12 2026"
+heroImage: "../../assets/fourth-layer-hero.jpg"
 tags: ["OTsecurity", "ICScybersecurity", "NIS2", "AIgovernance", "IEC62443"]
 ---
 

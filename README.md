@@ -16,7 +16,9 @@ Daniel's personal blog — **LIVE** at https://dan-tsu.github.io. Astro (TypeScr
 
 ## Publish / update loop
 
-1. Edit locally.
+> **MANDATORY: every post ships with a hero image.** No post is published without a `heroImage` — a heroless card breaks visual consistency on the index. Generate the hero via the Art skill (see **Hero images** below) as part of step 1, before building.
+
+1. Edit locally — write the post **and** generate + wire its `heroImage` (both, before building).
 2. `bun run build` to verify. **If content/collection changed, clear the cache first:** `rm -rf node_modules/.astro .astro dist` (stale cache renders deleted posts).
 3. `git commit` + `git push origin main`.
 4. `gh run watch $(gh run list --limit 1 --json databaseId --jq '.[0].databaseId') --exit-status` — wait for deploy.
@@ -31,7 +33,7 @@ Create `src/content/blog/<slug>.md`. Filename = slug = URL `/blog/<slug>/`.
 title: "..."
 description: "..."          # shown as the card excerpt + meta description
 pubDate: "Jul 11 2026"
-heroImage: "../../assets/<img>.jpg"   # optional; path relative to the .md file
+heroImage: "../../assets/<img>.jpg"   # REQUIRED (repo rule) — every post ships with a hero; path relative to the .md file
 tags: ["OTsecurity", "AI"]            # optional; feed the topic chips
 ---
 ```
